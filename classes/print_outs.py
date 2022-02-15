@@ -1,48 +1,90 @@
-ARGUMENTS_ERROR = 'Blad wywolania programu, brak argumentow.\n' \
-               'Poprawne wywolanie:\n' \
-               '\treader2.py <src> <dst> [<change1> [<change2> [<change3> ' \
-               '[...]]]]\n' \
-               '<src> :\t  plik zrodlowy (.csv, .json, .pickle)\n' \
-               '<dst> :\t  plik docelowy (.csv, .json, .pickle)\n' \
-               '<changeN> :\t  zmiana w komorce w formacie: "Y,X,wartosc"\n' \
-               '\tgdzie:\n' \
-               '\t\tY :\t  nr wiersza komorki\n' \
-               '\t\tX :\t  nr kolumny komorki\n' \
-               '\t\twartosc :\t  nowa wartosc komorki'
+HELP = 'Uruchamianie programu "reader2.py":\n' \
+       'reader2.py <src> <dst> [<change1> [<change2> [<change3> ' \
+       '[...]]]]\n' \
+       '    <src> :\t  plik zrodlowy (.csv, .json, .pickle)\n' \
+       '    <dst> :\t  plik docelowy (.csv, .json, .pickle)\n' \
+       '<changeN> :\t  zmiana w komorce w formacie: "Y,X,wartosc"\n' \
+       '\tgdzie:\n' \
+       '\t\t      Y :\tnr wiersza komorki\n' \
+       '\t\t      X :\tnr kolumny komorki\n' \
+       '\t\twartosc :\tnowa wartosc komorki'
 
-SRC_NOT_EXISTS = 'Plik zrodlowy nie istnieje.\n' \
-                 'Zawartosc ostatniego istniejacego folderu ("{}") w sciezce ' \
-                 'zrodlowej:'
+CHANGE_PARAM_ERROR = 'Bledny argument <changeN> {}.\n' + HELP
 
-DST_NOT_EXISTS = 'Folder docelowy nie istnieje.\n' \
-                 'Zawartosc ostatniego istniejacego folderu ("{}") w sciezce ' \
-                 'docelowej:'
+SRC_NOT_EXISTS = 'Plik zrodlowy ({}) nie istnieje.\n' \
+                 'Wyswietlic zawartosc ostatniego istniejacego folderu ' \
+                 'w sciezce zrodlowej ({})?'
 
-BELOW_ZERO = 'Ujemna wartosc w parametrze {}.'
+DST_NOT_EXISTS = 'Folder docelowy ({}) nie istnieje.\n' \
+                 'Wyswietlic zawartosc ostatniego istniejacego folderu ' \
+                 'w sciezce docelowej ({})?'
+
+SRC_POINTS_FOLDER = 'Nazwa pliku zrodlowego ({}) wskazuje na folder.\n' \
+                    'Wyswietlic zawartosc ostatniego istniejacego folderu ' \
+                    'w sciezce zrodlowej ({})?'
+
+DST_POINTS_FOLDER = 'Nazwa pliku docelowego ({}) wskazuje na folder.\n' \
+                    'Wyswietlic zawartosc ostatniego istniejacego folderu ' \
+                    'w sciezce zrodlowej ({})?'
+
+SRC_EXTENTION_ERROR = 'Nieobslugiwany typ pliku w sciezce zrodlowej:\n\t{}\n' \
+                      'Obslugiwane typy plikow:\n\t.csv\n\t.json\n\t.pickle'
+
+DST_EXTENTION_ERROR = 'Nieobslugiwany typ pliku w sciezce docelowej:\n\t{}\n' \
+                      'Obslugiwane typy plikow:\n\t.csv\n\t.json\n\t.pickle'
+
+TYPE_ERROR = 'Wartosc "{}" w parmetrze {} nie jest liczba calkowita.\n' \
+             'Aby uzyskac pomoc wpisz: reader2.py'
+
+BELOW_ZERO = 'Ujemna wartosc ({}) w parametrze {}.\n' \
+             'Aby uzyskac pomoc wpisz: reader2.py'
+
+LIST_FILE = 'Zostanie wydrukowana zawartosc pliku:' \
+            '\n\t{}.'
+
+COPY_FILE = 'Zawartosc pliku zrodlowego:' \
+            '\n\t{}' \
+            '\nzostanie skopiowana do pliku:' \
+            '\n\t{}'
+
+MODIFY_FILE = 'Zawartosc pliku \n\t' \
+              '{}\n' \
+              'zostanie zmodyfikowana i zapisana w pliku \n\t' \
+              '{}'
+
+PROGRAM_END = '\nKoniec programu.'
 
 PRINTS = {
-    ('a', -1): ARGUMENTS_ERROR,
-    ('a', -2): SRC_NOT_EXISTS,
-    ('a', -3): DST_NOT_EXISTS,
-    ('a', -4): BELOW_ZERO,
-    ('a', 2): 'Zostanie wydrukowana zawartosc pliku:\n\t{}.',
-    ('a', 3): 'Plik zrodlowy:\n\t{}\nzostanie skopiowany do pliku:\n\t{}'
-    # ('p', 1): 'W parametrze {} jest niedozwolony znak',
+    (-100, 0): HELP,
+    (-1, 1): SRC_NOT_EXISTS,
+    (-1, 2): DST_NOT_EXISTS,
+    (-2, 1): SRC_POINTS_FOLDER,
+    (-2, 2): DST_POINTS_FOLDER,
+    (-3, 1): SRC_EXTENTION_ERROR,
+    (-3, 2): DST_EXTENTION_ERROR,
+    (-4, 1): TYPE_ERROR,
+    (-5, 1): BELOW_ZERO,
+    (-6, 2): TYPE_ERROR,
+    (-7, 2): BELOW_ZERO,
+    (-8, 0): CHANGE_PARAM_ERROR,
+    (2, 0): LIST_FILE,
+    (3, 0): COPY_FILE,
+    (4, 0): MODIFY_FILE,
+    (5, 0): PROGRAM_END
     }
 
 
-class PrintOuts():
-    # def __init__(self, args_list, data_sheet):
-    #     DataManipulation.__init__(args_list, data_sheet)
-    #     self.PRINTS = {}
-
+class PrintOuts:
     def print_question(self):
         while True:
-            answer = input(' Tak/Nie: ').lower()
-            if answer[0] == 't':
+            answer = input('\nKontynuowac? (domyslnie: NIE)\n'
+                           'T(AK)/N(IE): ').lower()
+            if answer and answer[0] == 't':
                 return True
-            elif answer[0] == 'n':
+            elif answer and answer[0] == 'n':
+                return False
+            else:
                 return False
 
-    def print_action_msgs(self, key, arg1=None, arg2=None, arg3=None):
-        print(PRINTS[key].format(arg1, arg2, arg3))
+    def print_action_msgs(self, key, *values):
+        print(PRINTS[key].format(*values))
