@@ -5,6 +5,9 @@ class DataManipulation(FileManipulation):
     def __init__(self, args_list):
         super().__init__(args_list)
         self.data_sheet = []
+        # zwracane przez metode check_array_index:
+        self.old_cells_values = []
+        self.index_error = ()
 
     def print_data(self):
         for line in self.data_sheet:
@@ -27,10 +30,17 @@ class DataManipulation(FileManipulation):
         elif self.extentions_list[1] == '.pickle':
             self.write_to_pickle(self.abs_paths_list[2], self.data_sheet)
 
-    def change_cells_values(self):
+    def check_array_index(self):
         self.changes_params_list.sort()
         for item in self.changes_params_list:
             try:
-                self.data_sheet[item[0]][item[1]] = item[2]
+                self.old_cells_values.append(
+                    self.data_sheet[item[0]][item[1]]
+                )
             except IndexError:
-                print('Poza zasiegiem tablicy')
+                self.index_error = (-9, item[0], item[1])
+                return self.index_error
+        return 0, 0, 0
+
+    def change_cell_value(self, cell_row, cell_column, value):
+        self.data_sheet[cell_row][cell_column] = value

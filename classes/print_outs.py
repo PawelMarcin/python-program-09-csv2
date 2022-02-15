@@ -5,8 +5,8 @@ HELP = 'Uruchamianie programu "reader2.py":\n' \
        '    <dst> :\t  plik docelowy (.csv, .json, .pickle)\n' \
        '<changeN> :\t  zmiana w komorce w formacie: "Y,X,wartosc"\n' \
        '\tgdzie:\n' \
-       '\t\t      Y :\tnr wiersza komorki\n' \
-       '\t\t      X :\tnr kolumny komorki\n' \
+       '\t\t      Y :\tnr wiersza komorki (numeracja od 0)\n' \
+       '\t\t      X :\tnr kolumny komorki (numeracja od 0)\n' \
        '\t\twartosc :\tnowa wartosc komorki'
 
 CHANGE_PARAM_ERROR = 'Bledny argument <changeN> {}.\n' + HELP
@@ -25,7 +25,7 @@ SRC_POINTS_FOLDER = 'Nazwa pliku zrodlowego ({}) wskazuje na folder.\n' \
 
 DST_POINTS_FOLDER = 'Nazwa pliku docelowego ({}) wskazuje na folder.\n' \
                     'Wyswietlic zawartosc ostatniego istniejacego folderu ' \
-                    'w sciezce zrodlowej ({})?'
+                    'w sciezce docelowej ({})?'
 
 SRC_EXTENTION_ERROR = 'Nieobslugiwany typ pliku w sciezce zrodlowej:\n\t{}\n' \
                       'Obslugiwane typy plikow:\n\t.csv\n\t.json\n\t.pickle'
@@ -39,6 +39,12 @@ TYPE_ERROR = 'Wartosc "{}" w parmetrze {} nie jest liczba calkowita.\n' \
 BELOW_ZERO = 'Ujemna wartosc ({}) w parametrze {}.\n' \
              'Aby uzyskac pomoc wpisz: reader2.py'
 
+ARRAY_INDEX_ERROR = 'Komorka ({}, {}) poza zakresem tablicy.\n' \
+                    'Wymiary tablicy:\n' \
+                    '\tY: {} wiersze/-y (od 0 do {})\n' \
+                    '\tX: {} kolumn (od 0 do {})\n' \
+                    'Nie zmieniono wartosci komorek.'
+
 LIST_FILE = 'Zostanie wydrukowana zawartosc pliku:' \
             '\n\t{}.'
 
@@ -47,10 +53,20 @@ COPY_FILE = 'Zawartosc pliku zrodlowego:' \
             '\nzostanie skopiowana do pliku:' \
             '\n\t{}'
 
-MODIFY_FILE = 'Zawartosc pliku \n\t' \
+MODIFY_FILE = 'Zawartosc pliku: \n\t' \
               '{}\n' \
-              'zostanie zmodyfikowana i zapisana w pliku \n\t' \
+              'zostanie zmodyfikowana i zapisana w pliku: \n\t' \
               '{}'
+
+READY_TO_CHANGE_CELL = '\nCzy zmienic wartosc komorki ({}, {})?\n' \
+                       '\tStara wartosc: {}\n' \
+                       '\tNowa wartosc: {}'
+
+CELL_CHANGED = 'Zmieniono i zapisano wartosc komorki ({}, {})\n' \
+               '\tStara wartosc: {}\n' \
+               '\tNowa wartosc: {}'
+
+CELL_NOT_CHANGED = 'Nie zmieniono wartosci komorki ({}, {})'
 
 PROGRAM_END = '\nKoniec programu.'
 
@@ -67,18 +83,22 @@ PRINTS = {
     (-6, 2): TYPE_ERROR,
     (-7, 2): BELOW_ZERO,
     (-8, 0): CHANGE_PARAM_ERROR,
+    (-9, 0): ARRAY_INDEX_ERROR,
     (2, 0): LIST_FILE,
     (3, 0): COPY_FILE,
     (4, 0): MODIFY_FILE,
-    (5, 0): PROGRAM_END
+    (5, 0): READY_TO_CHANGE_CELL,
+    (6, 0): CELL_CHANGED,
+    (7, 0): CELL_NOT_CHANGED,
+    (8, 0): PROGRAM_END
     }
 
 
 class PrintOuts:
     def print_question(self):
         while True:
-            answer = input('\nKontynuowac? (domyslnie: NIE)\n'
-                           'T(AK)/N(IE): ').lower()
+            answer = input('Kontynuowac? (domyslnie: NIE)\n'
+                           'T(ak)/N(ie): ').lower()
             if answer and answer[0] == 't':
                 return True
             elif answer and answer[0] == 'n':
