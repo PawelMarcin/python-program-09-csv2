@@ -13,7 +13,8 @@
 #       sprawdzenie poprawnosci parametrow zmian --> jesli argument niepoprawny
 #       to koniec programu z odpowiednim komunikatem, jesli argumenty poprawne
 #       --> wprowadzenie zmian w pliku.
-#   1.4. Koniec dzialania programu
+# 2.    Jesli walidacja pomyslna --> wykonanie wybranej akcji
+# 3.    Koniec dzialania programu
 
 """
 TODO: przed wprowadzeniem zmiany komorki dodac wyswietlenie starej
